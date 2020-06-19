@@ -13,11 +13,6 @@ class Cart
     private View $interpreter;
 
 
-    public function getProducts(): array
-    {
-        return $this->products;
-    }
-
     public function __construct(View $interpreter)
     {
         $this->interpreter = $interpreter;
@@ -28,9 +23,6 @@ class Cart
         foreach ($this->products as $prod) {
             if ($product === $prod) {
                 $prod->qty += 1;
-                return true;
-            } else {
-                $this->products[] = $product;
                 return true;
             }
         }
@@ -43,16 +35,6 @@ class Cart
         foreach ($this->products as $index => $product) {
             if ($id === $product->getId()) {
                 unset($this->products[$index]);
-                break;
-            }
-        }
-    }
-
-    public function getProductById(int $id): Product
-    {
-        foreach ($this->products as $product) {
-            if ($id === $product->getId()) {
-                return $product;
                 break;
             }
         }
@@ -180,4 +162,5 @@ $cart->addProduct($chockolate);
 $cart->addProduct($mamaYuri);
 $cart->changeQty(1, 10);
 $cart->changeQty(2, 4);
+$cart->removeProductById(2);
 echo $cart->payForProducts();
