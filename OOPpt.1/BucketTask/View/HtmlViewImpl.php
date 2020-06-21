@@ -4,21 +4,24 @@ class HtmlViewImpl implements View
 {
     function print(array $params): string
     {
-        $productPrice = '';
+        $productsContent = '';
+
         foreach ($params['check'] as $cartProd) {
-            $productPrice .= $cartProd->getProduct()->getName()
+            $productsContent .= $cartProd->getProduct()->getName()
                 . ' ' . $cartProd->getQty() . 'x'
                 . ' ' . $cartProd->getRowPrice()
                 . '$' . "<br>";
         }
 
-        return "<div><div>-----Check-----</div> 
+        return "<div>
+                <div>-----Check-----</div> 
                 <div>Date: ${params['date']}</div>
                 <div>----Products----</div>
-                <div>${productPrice}</div> <br>
+                <div>${productsContent}</div> <br>
                 <div>Total: ${params['total']}$</div>
                 <div> Tax: ${params['tax']}$</div>
-                <div> To pay: ${params['toPay']}$</div> </div>";
+                <div> To pay: ${params['toPay']}$</div>
+                </div>";
     }
 }
 

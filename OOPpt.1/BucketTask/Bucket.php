@@ -49,6 +49,7 @@ class Cart
     public function getTotalPrice(): float
     {
         $sum = 0;
+
         foreach ($this->products as $cartProd) {
             $sum += $cartProd->getRowPrice();
         }
@@ -68,18 +69,13 @@ class Cart
 
     public function payForProducts(): string
     {
-        $dt = date('m.d.Y h:i:s ');
-        $sum = $this->getTotalPrice();
-        $tax = $this->tax();
-        $check = $this->products;
-        $toPay = $this->toPay();
-
         return $this->checkView->print([
-            'date' => $dt,
-            'total' => $sum,
-            'tax' => $tax,
-            'check' => $check,
-            'toPay' => $toPay]);
+            'date' => date('m.d.Y h:i:s '),
+            'total' => $this->getTotalPrice(),
+            'tax' => $this->tax(),
+            'check' => $this->products,
+            'toPay' => $this->toPay()
+        ]);
     }
 }
 

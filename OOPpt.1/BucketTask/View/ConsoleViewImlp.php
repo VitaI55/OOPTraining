@@ -5,9 +5,10 @@ class ConsoleViewImlp implements View
 {
     function print(array $params): string
     {
-        $productPrice = '';
+        $productsContent = '';
+
         foreach ($params['check'] as $cartProd) {
-            $productPrice .= $cartProd->getProduct()->getName()
+            $productsContent .= $cartProd->getProduct()->getName()
                 . ' ' . $cartProd->getQty() . 'x'
                 . ' ' . $cartProd->getRowPrice()
                 . '$' . "\n";
@@ -16,7 +17,7 @@ class ConsoleViewImlp implements View
         return '-----Check-----' . "\n"
             . 'Data: ' . $params['date'] . "\n"
             . '----Products----' . "\n"
-            . '' . $productPrice . "\n"
+            . '' . $productsContent . "\n"
             . 'Total:  ' . $params['total'] . "$" . "\n"
             . 'Tax:    ' . $params['tax'] . "$" . "\n"
             . 'To pay: ' . $params['toPay'] . "$";
