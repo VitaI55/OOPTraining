@@ -3,8 +3,8 @@ include_once('Bucket.php');
 
 class ProductInCart
 {
-    public int $qty;
-    public Product $product;
+    private int $qty;
+    private Product $product;
 
     public function getProduct(): Product
     {
@@ -22,7 +22,7 @@ class ProductInCart
         $this->qty = $qty;
     }
 
-    public function getQty()
+    public function getQty(): int
     {
         return $this->qty;
     }

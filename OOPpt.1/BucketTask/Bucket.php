@@ -7,6 +7,9 @@ include_once('ProductInCart.php');
 
 class Cart
 {
+    /**
+     * @var ProductInCart[]
+     */
     public array $products = [];
     public float $tax = 0.10;
     private View $checkView;
@@ -18,58 +21,46 @@ class Cart
 
     public function addProduct(Product $product): void
     {
-        foreach ($this->products as $index => $cartProd) {
-            if ($cartProd->getProduct() === $product) {
-                $cartProd->qty += 1;
-                return;
-            }
+        if (isset($this->products[$product->getId()])) {
+            $this->products[$product->getId()]->setQty($this->products[$product->getId()]->getQty() + 1);
+        } else {
+            $this->products[$product->getId()] = new ProductInCart($product);
         }
-        $this->products[] = new ProductInCart($product);
     }
 
     public function removeProductById($id): void
     {
-        foreach ($this->products as $index => $cartProd) {
-            if ($id === $cartProd->getProduct()->getId()) {
-                unset($this->products[$index]);
-                break;
-            }
-        }
+        unset($this->products[$id]);
     }
 
-    public function updateQtyByProductId($id, $newQty)
+    public function updateQtyByProductId($id, $newQty): void
     {
-        foreach ($this->products as $index => $cartProd) {
-            if ($id === $cartProd->getProduct()->getId()) {
-                $cartProd->setQty($newQty);
-                break;
-            }
-        }
+        $this->products[$id]->setQty($newQty);
     }
 
-    public function totalPrice(): float
+    public function getTotalPrice(): float
     {
         $sum = 0;
         foreach ($this->products as $cartProd) {
             $sum += $cartProd->getRowPrice();
         }
-        return $sum + 0.01;
+        return $sum;
     }
 
     public function tax(): float
     {
-        return ($this->totalPrice() * $this->tax) + 0.01;
+        return $this->getTotalPrice() * $this->tax;
     }
 
     public function toPay(): float
     {
-        return ($this->totalPrice() - $this->tax()) + 0.01;
+        return $this->getTotalPrice() - $this->tax();
     }
 
-    public function payForProducts()
+    public function payForProducts(): string
     {
         $dt = date('m.d.Y h:i:s ');
-        $sum = $this->totalPrice();
+        $sum = $this->getTotalPrice();
         $tax = $this->tax();
         $check = $this->products;
         $toPay = $this->toPay();
@@ -93,7 +84,6 @@ class Product
         return $this->id;
     }
 
-
     function __construct(int $id, string $name, float $price)
     {
         $this->id = $id;
@@ -106,23 +96,25 @@ class Product
         return $this->name;
     }
 
-
     public function getPrice(): float
     {
         return $this->price;
     }
-
 }
 
-//$interpreter = new ConsoleViewImlp();
-$interpreter = new HtmlViewImpl();
+$interpreter = new ConsoleViewImlp();
+//$interpreter = new HtmlViewImpl();
 $cart = new Cart($interpreter);
 $milka = new Product(1, 'Milka', 4.50);
 $chockolate = new Product(2, 'Chock', 5.50);
 $mamaYuri = new Product(3, 'Tamara', 0.50);
 $cart->addProduct($milka);
+$cart->addProduct($milka);
+$cart->addProduct($milka);
 $cart->addProduct($chockolate);
 $cart->addProduct($mamaYuri);
+$cart->removeProductById(2);
 $cart->updateQtyByProductId(3, 2);
-$cart->updateQtyByProductId(1, 2);
+$cart->updateQtyByProductId(1, 5);
 echo $cart->payForProducts();
+print_r($cart->products);

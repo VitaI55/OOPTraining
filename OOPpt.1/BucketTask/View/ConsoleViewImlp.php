@@ -9,7 +9,7 @@ class ConsoleViewImlp implements View
         $var = $params[0];
         $str = '';
         foreach ($var['check'] as $cartProd) {
-            $str .= $cartProd->product->getName()
+            $str .= $cartProd->getProduct()->getName()
                 . ' ' . $cartProd->getQty() . 'x'
                 . ' ' . $cartProd->getRowPrice()
                 . '$' . "\n";
