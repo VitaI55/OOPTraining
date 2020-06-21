@@ -6,6 +6,11 @@ class ProductInCart
     private int $qty;
     private Product $product;
 
+    public function increaseQty(): void
+    {
+        $this->qty += 1;
+    }
+
     public function getProduct(): Product
     {
         return $this->product;

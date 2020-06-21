@@ -3,24 +3,22 @@ include_once('View.php');
 
 class ConsoleViewImlp implements View
 {
-
     function print(array $params): string
     {
-        $var = $params[0];
-        $str = '';
-        foreach ($var['check'] as $cartProd) {
-            $str .= $cartProd->getProduct()->getName()
+        $productPrice = '';
+        foreach ($params['check'] as $cartProd) {
+            $productPrice .= $cartProd->getProduct()->getName()
                 . ' ' . $cartProd->getQty() . 'x'
                 . ' ' . $cartProd->getRowPrice()
                 . '$' . "\n";
         }
-        return '-----Check-----' . "\n"
-            . 'Data: ' . $var['date'] . "\n"
-            . '----Products----' . "\n"
-            . '' . $str . "\n"
-            . 'Total:  ' . $var['total'] . "$" . "\n"
-            . 'Tax:    ' . $var['tax'] . "$" . "\n"
-            . 'To pay: ' . $var['toPay'] . "$";
 
+        return '-----Check-----' . "\n"
+            . 'Data: ' . $params['date'] . "\n"
+            . '----Products----' . "\n"
+            . '' . $productPrice . "\n"
+            . 'Total:  ' . $params['total'] . "$" . "\n"
+            . 'Tax:    ' . $params['tax'] . "$" . "\n"
+            . 'To pay: ' . $params['toPay'] . "$";
     }
 }

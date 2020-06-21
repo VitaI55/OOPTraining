@@ -2,5 +2,5 @@
 
 interface View
 {
-    function print(array $params);
+    function print(array $params):string;
 }

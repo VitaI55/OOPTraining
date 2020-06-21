@@ -10,9 +10,17 @@ class Cart
     /**
      * @var ProductInCart[]
      */
-    public array $products = [];
-    public float $tax = 0.10;
+    private array $products = [];
+    private float $tax = 0.10;
     private View $checkView;
+
+    /**
+     * @return ProductInCart[]
+     */
+    public function getProducts(): array
+    {
+        return $this->products;
+    }
 
     public function __construct(View $checkView)
     {
@@ -22,7 +30,7 @@ class Cart
     public function addProduct(Product $product): void
     {
         if (isset($this->products[$product->getId()])) {
-            $this->products[$product->getId()]->setQty($this->products[$product->getId()]->getQty() + 1);
+            $this->products[$product->getId()]->increaseQty();
         } else {
             $this->products[$product->getId()] = new ProductInCart($product);
         }
@@ -33,7 +41,7 @@ class Cart
         unset($this->products[$id]);
     }
 
-    public function updateQtyByProductId($id, $newQty): void
+    public function updateQtyByProductId(int $id, int $newQty): void
     {
         $this->products[$id]->setQty($newQty);
     }
@@ -44,6 +52,7 @@ class Cart
         foreach ($this->products as $cartProd) {
             $sum += $cartProd->getRowPrice();
         }
+
         return $sum;
     }
 
@@ -64,12 +73,13 @@ class Cart
         $tax = $this->tax();
         $check = $this->products;
         $toPay = $this->toPay();
-        $parameters[] = ['date' => $dt,
+
+        return $this->checkView->print([
+            'date' => $dt,
             'total' => $sum,
             'tax' => $tax,
             'check' => $check,
-            'toPay' => $toPay];
-        return $this->checkView->print($parameters);
+            'toPay' => $toPay]);
     }
 }
 
@@ -113,8 +123,5 @@ $cart->addProduct($milka);
 $cart->addProduct($milka);
 $cart->addProduct($chockolate);
 $cart->addProduct($mamaYuri);
-$cart->removeProductById(2);
-$cart->updateQtyByProductId(3, 2);
-$cart->updateQtyByProductId(1, 5);
+$cart->updateQtyByProductId(1, 3);
 echo $cart->payForProducts();
-print_r($cart->products);
