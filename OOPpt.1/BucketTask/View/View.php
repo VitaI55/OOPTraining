@@ -1,5 +1,6 @@
 <?php
 
-interface View{
+interface View
+{
     function print(array $params);
 }

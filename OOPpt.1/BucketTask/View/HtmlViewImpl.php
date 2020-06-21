@@ -1,5 +1,4 @@
 <?php
-include_once('View.php');
 
 class HtmlViewImpl implements View
 {

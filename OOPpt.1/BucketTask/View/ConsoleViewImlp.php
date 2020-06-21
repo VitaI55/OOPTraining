@@ -1,6 +1,8 @@
 <?php
-include_once ('View.php');
-class ConsoleViewImlp implements View{
+include_once('View.php');
+
+class ConsoleViewImlp implements View
+{
 
     function print(array $params): string
     {

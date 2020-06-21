@@ -1,15 +1,16 @@
 <?php
 
-include_once('ConsoleViewImlp.php');
-include_once('View.php');
-include_once('HtmlViewImpl.php');
+include_once('View/ConsoleViewImlp.php');
+include_once('View/View.php');
+include_once('View/HtmlViewImpl.php');
 
 
 class Cart
 {
     public array $products = [];
     public float $tax = 0.10;
-    private array $check = [];
+    public array $check = [];
+    public array $qtyProd = [];
     private View $interpreter;
 
 
@@ -20,13 +21,14 @@ class Cart
 
     public function addProduct(Product $product): bool
     {
-        foreach ($this->products as $prod) {
+        foreach ($this->products as $index => $prod) {
             if ($product === $prod) {
-                $prod->qty += 1;
+                $this->qtyProd[$index][$product->getId()] += 1;
                 return true;
             }
         }
         $this->products[] = $product;
+        $this->qtyProd[] = [$product->getId() => 1];
         return true;
     }
 
@@ -35,6 +37,7 @@ class Cart
         foreach ($this->products as $index => $product) {
             if ($id === $product->getId()) {
                 unset($this->products[$index]);
+                unset($this->qtyProd[$index]);
                 break;
             }
         }
@@ -42,9 +45,9 @@ class Cart
 
     public function changeQty(int $id, int $newCapacity): void
     {
-        foreach ($this->products as $product) {
+        foreach ($this->products as $index => $product) {
             if ($id === $product->getId()) {
-                $product->qty = $newCapacity;
+                $this->qtyProd[$index][$id] = $newCapacity;
             }
         }
     }
@@ -52,8 +55,8 @@ class Cart
     public function calculateSum(): float
     {
         $sum = 0;
-        foreach ($this->products as $product) {
-            $sum += $product->qty * $product->getPrice();
+        foreach ($this->products as $index => $product) {
+            $sum += $this->qtyProd[$index][$product->getId()] * $product->getPrice();
         }
         return $sum;
     }
@@ -68,10 +71,12 @@ class Cart
                 return $this->check;
             }
             if ($this->products[$index] === $product) {
-                $sum += $product->qty * $product->getPrice();
+                $count = $this->qtyProd[$index][$product->getId()];
+                $sum += $count * $product->getPrice();
                 $prodName = $product->getName();
                 if (next($this->products) !== $product) {
-                    $this->check[] = [$prodName . ' x' . "$product->qty" . ' ' . (floatval($sum) + 0.01) . "$"];
+                    $this->check[] = [$prodName . ' x' . $count
+                        . ' ' . (floatval($sum) + 0.01) . "$"];
                     $sum = 0;
                 }
 
@@ -118,23 +123,17 @@ class Product
     private string $name;
     private float $price;
     private int $id;
-    public int $qty;
 
     public function getId(): int
     {
         return $this->id;
     }
 
-    public function getQty(): int
-    {
-        return $this->qty;
-    }
 
     function __construct(int $id, string $name, float $price)
     {
         $this->id = $id;
         $this->name = $name;
-        $this->qty = 1;
         $this->price = $price;
     }
 
@@ -160,7 +159,7 @@ $mamaYuri = new Product(3, 'Tamara', 0.50);
 $cart->addProduct($milka);
 $cart->addProduct($chockolate);
 $cart->addProduct($mamaYuri);
-$cart->changeQty(1, 10);
-$cart->changeQty(2, 4);
-$cart->removeProductById(2);
+$cart->addProduct($milka);
+$cart->changeQty(3, 7);
+$cart->removeProductById(3);
 echo $cart->payForProducts();
