@@ -3,120 +3,84 @@
 include_once('View/ConsoleViewImlp.php');
 include_once('View/View.php');
 include_once('View/HtmlViewImpl.php');
-
+include_once('ProductInCart.php');
 
 class Cart
 {
     public array $products = [];
     public float $tax = 0.10;
-    public array $check = [];
-    public array $qtyProd = [];
-    private View $interpreter;
+    private View $checkView;
 
-
-    public function __construct(View $interpreter)
+    public function __construct(View $checkView)
     {
-        $this->interpreter = $interpreter;
+        $this->checkView = $checkView;
     }
 
-    public function addProduct(Product $product): bool
+    public function addProduct(Product $product): void
     {
-        foreach ($this->products as $index => $prod) {
-            if ($product === $prod) {
-                $this->qtyProd[$index][$product->getId()] += 1;
-                return true;
+        foreach ($this->products as $index => $cartProd) {
+            if ($cartProd->getProduct() === $product) {
+                $cartProd->qty += 1;
+                return;
             }
         }
-        $this->products[] = $product;
-        $this->qtyProd[] = [$product->getId() => 1];
-        return true;
+        $this->products[] = new ProductInCart($product);
     }
 
     public function removeProductById($id): void
     {
-        foreach ($this->products as $index => $product) {
-            if ($id === $product->getId()) {
+        foreach ($this->products as $index => $cartProd) {
+            if ($id === $cartProd->getProduct()->getId()) {
                 unset($this->products[$index]);
-                unset($this->qtyProd[$index]);
                 break;
             }
         }
     }
 
-    public function changeQty(int $id, int $newCapacity): void
+    public function updateQtyByProductId($id, $newQty)
     {
-        foreach ($this->products as $index => $product) {
-            if ($id === $product->getId()) {
-                $this->qtyProd[$index][$id] = $newCapacity;
+        foreach ($this->products as $index => $cartProd) {
+            if ($id === $cartProd->getProduct()->getId()) {
+                $cartProd->setQty($newQty);
+                break;
             }
         }
     }
 
-    public function calculateSum(): float
+    public function totalPrice(): float
     {
         $sum = 0;
-        foreach ($this->products as $index => $product) {
-            $sum += $this->qtyProd[$index][$product->getId()] * $product->getPrice();
+        foreach ($this->products as $cartProd) {
+            $sum += $cartProd->getRowPrice();
         }
-        return $sum;
+        return $sum + 0.01;
     }
 
-    public function qtyAllProd(): array
+    public function tax(): float
     {
-        $sum = 0;
-        $this->products[] = ['Stop'];
-
-        foreach ($this->products as $index => $product) {
-            if (!$this->products[$index] instanceof Product) {
-                return $this->check;
-            }
-            if ($this->products[$index] === $product) {
-                $count = $this->qtyProd[$index][$product->getId()];
-                $sum += $count * $product->getPrice();
-                $prodName = $product->getName();
-                if (next($this->products) !== $product) {
-                    $this->check[] = [$prodName . ' x' . $count
-                        . ' ' . (floatval($sum) + 0.01) . "$"];
-                    $sum = 0;
-                }
-
-            }
-        }
-        return $this->check;
+        return ($this->totalPrice() * $this->tax) + 0.01;
     }
 
-    public function printCheck(): string
+    public function toPay(): float
     {
-        $str = '';
-        if ($this->interpreter instanceof ConsoleViewImlp) {
-            foreach ($this->qtyAllProd() as $prod) {
-                $str .= $prod[0] . "\n";
-            }
-        } else if ($this->interpreter instanceof HtmlViewImpl) {
-            foreach ($this->qtyAllProd() as $prod) {
-                $str .= $prod[0] . "<br>";
-            }
-        }
-        return $str;
+        return ($this->totalPrice() - $this->tax()) + 0.01;
     }
 
     public function payForProducts()
     {
         $dt = date('m.d.Y h:i:s ');
-        $sum = floatval($this->calculateSum()) + 0.01;
-        $tax = floatval($sum * $this->tax);
-        $check = $this->printCheck();
-        $fine = $sum - $tax;
+        $sum = $this->totalPrice();
+        $tax = $this->tax();
+        $check = $this->products;
+        $toPay = $this->toPay();
         $parameters[] = ['date' => $dt,
             'total' => $sum,
             'tax' => $tax,
             'check' => $check,
-            'toPay' => $fine];
-        return $this->interpreter->print($parameters);
+            'toPay' => $toPay];
+        return $this->checkView->print($parameters);
     }
-
 }
-
 
 class Product
 {
@@ -150,8 +114,8 @@ class Product
 
 }
 
-$interpreter = new ConsoleViewImlp();
-//$interpreter = new HtmlViewImpl();
+//$interpreter = new ConsoleViewImlp();
+$interpreter = new HtmlViewImpl();
 $cart = new Cart($interpreter);
 $milka = new Product(1, 'Milka', 4.50);
 $chockolate = new Product(2, 'Chock', 5.50);
@@ -159,7 +123,6 @@ $mamaYuri = new Product(3, 'Tamara', 0.50);
 $cart->addProduct($milka);
 $cart->addProduct($chockolate);
 $cart->addProduct($mamaYuri);
-$cart->addProduct($milka);
-$cart->changeQty(3, 7);
-$cart->removeProductById(3);
+$cart->updateQtyByProductId(3, 2);
+$cart->updateQtyByProductId(1, 2);
 echo $cart->payForProducts();
