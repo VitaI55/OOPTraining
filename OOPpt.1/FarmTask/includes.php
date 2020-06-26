@@ -1,0 +1,12 @@
+<?php
+include_once('Domain/FarmProfit.php');
+include_once('Domain/Farm.php');
+include_once('Domain/Exchange.php');
+include_once('Deliver.php');
+include_once('Workers/Worker.php');
+include_once('Transport/PlaneShipImpl.php');
+include_once('Transport/TrainShipImpl.php');
+include_once('Transport/TruckShipImpl.php');
+include_once('Workers/CommonWorker.php');
+include_once('Workers/FarmerWorker.php');
+include_once('Workers/TractorWorker.php');
