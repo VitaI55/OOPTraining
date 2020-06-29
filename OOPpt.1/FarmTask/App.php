@@ -11,7 +11,7 @@ $farmProfit = new FarmProfit($farm, $exc);
 
 while (true) {
     sleep(1);
-    if ($garage !== null) {
+    if (!empty($garage)) {
         $farm->checkDeliver($garage);
         unset($garage[$farmProfit->cleanGarage($garage)]);
     }
@@ -23,7 +23,7 @@ while (true) {
     }
     print_r($garage);
     $sek++;
-    echo 'money:' . $farm->moneyBalance . "\n";
-    echo 'corn:' . $farm->cornBalance . "\n";
+    echo 'money:' . $farm->getMoneyBalance() . "\n";
+    echo 'corn:' . $farm->getCornBalance() . "\n";
     echo 'Seconds:' . $sek . "\n";
 }

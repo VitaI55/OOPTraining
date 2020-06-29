@@ -12,31 +12,20 @@ class FarmProfit
         $this->garage = [];
     }
 
-    /**
-     * @return Farm
-     */
-    public function getFarm(): Farm
-    {
-        return $this->farm;
-    }
-
     public function ifProfitable(array $params)
     {
         if ($params['price'] === $this->exchange->getMaxPrice()) {
-            if ($this->farm->getCornBalance() >= 100 && $this->farm->getMoneyBalance() >= 1000
-                && isset($params['transport']['plane'])) {
+            if ($this->farm->getCornBalance() >= 100 && isset($params['transport']['plane'])) {
                 $this->farm->sellCorn($params['transport']['plane']);
 
                 return $params['transport']['plane'];
 
-            } else if ($this->farm->getCornBalance() >= 20 && $this->farm->getMoneyBalance() >= 200
-                && isset($params['transport']['train'])) {
+            } else if ($this->farm->getCornBalance() >= 20 && isset($params['transport']['train'])) {
                 $this->farm->sellCorn($params['transport']['train']);
 
                 return $params['transport']['train'];
 
-            } else if ($this->farm->getCornBalance() >= 4 && $this->farm->getMoneyBalance() >= 50
-                && isset($params['transport']['truck'])) {
+            } else if ($this->farm->getCornBalance() >= 4 && isset($params['transport']['truck'])) {
                 $this->farm->sellCorn($params['transport']['truck']);
 
                 return $params['transport']['truck'];

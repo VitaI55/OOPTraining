@@ -2,11 +2,14 @@
 
 class FarmerWorker extends Worker
 {
-    public function work(Farm $farm): void
+    public function work(int $farmMoney, int $farmCorn): array
     {
-        if ($farm->moneyBalance >= 5) {
-            $farm->moneyBalance -= 5;
-            $farm->cornBalance += mt_rand(10, 30);
+        if ($farmMoney >= 5) {
+            $params['payedSalary'] = $farmMoney - 5;
+            $params['earnedCorn'] = $farmCorn + mt_rand(10, 30);
+            return $params;
         }
+
+        return ['payedSalary' => $farmMoney, 'earnedCorn' => $farmCorn];
     }
 }

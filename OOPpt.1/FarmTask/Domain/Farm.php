@@ -2,22 +2,12 @@
 
 class Farm
 {
-    public int $moneyBalance;
-    public int $cornBalance;
+    private int $moneyBalance;
+    private int $cornBalance;
 
     public function __construct(int $moneyBalance, int $cornBalance)
     {
         $this->moneyBalance = $moneyBalance;
-        $this->cornBalance = $cornBalance;
-    }
-
-    public function setMoneyBalance(int $moneyBalance): void
-    {
-        $this->moneyBalance = $moneyBalance;
-    }
-
-    public function setCornBalance(int $cornBalance): void
-    {
         $this->cornBalance = $cornBalance;
     }
 
@@ -34,20 +24,25 @@ class Farm
     public function payWorker(array $workers): void
     {
         foreach ($workers as $worker) {
-            $worker->work($this);
+            $params = $worker->work($this->moneyBalance, $this->cornBalance);
+            $this->moneyBalance = $params['payedSalary'];
+            $this->cornBalance = $params['earnedCorn'];
         }
     }
 
     public function sellCorn(Deliver $transport): void
     {
-        $transport->doShipping($this);
+        $this->cornBalance = $transport->doShipping($this->moneyBalance, $this->cornBalance);
     }
 
     public function checkDeliver(array $garage): void
     {
         foreach ($garage as $index => $transport) {
             if ($transport->getDeliverTime() >= 1) {
-                $transport->isDelivering($this);
+                $deliverMoney = $transport->isDelivering($this->moneyBalance);
+                if (!empty($deliverMoney)) {
+                    $this->moneyBalance = $deliverMoney;
+                }
             }
         }
     }

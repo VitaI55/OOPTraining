@@ -39,19 +39,19 @@ class Exchange
     {
         $rand = mt_rand(1, 50);
         if ($rand > 25) {
-            $transport['truck'] = new TruckShipImpl();
+            $transport['truck'] = new TruckDeliverImpl();
             if ($rand < 40) {
-                $transport['plane'] = new PlaneShipImpl();
+                $transport['plane'] = new PlaneDeliverImpl();
                 if ($rand > 30) {
-                    $transport['train'] = new TrainShipImpl();
+                    $transport['train'] = new TrainDeliverImpl();
                 }
             }
         } else if ($rand <= 25) {
-            $transport['train'] = new TrainShipImpl();
+            $transport['train'] = new TrainDeliverImpl();
             if ($rand > 15) {
-                $transport['truck'] = new TruckShipImpl();
+                $transport['truck'] = new TruckDeliverImpl();
                 if ($rand > 20) {
-                    $transport['plane'] = new PlaneShipImpl();
+                    $transport['plane'] = new PlaneDeliverImpl();
                 }
             }
         }

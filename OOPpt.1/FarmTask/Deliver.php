@@ -2,15 +2,13 @@
 
 interface Deliver
 {
-    function doShipping(Farm $farm): void;
+    function doShipping(int $farmMoney, int $farmCorn): int;
 
-    function paymentForDeliverMin(Farm $farm): int;
+    function paymentForDeliver(): int;
 
-    function paymentForDeliverMax(Farm $farm): int;
+    function paymentForDeliverMax(): int;
 
-    function isDelivering(Farm $farm): void;
+    function isDelivering(int $farmMoney);
 
     function getDeliverTime(): int;
-
-    function getDifference(): int;
 }
