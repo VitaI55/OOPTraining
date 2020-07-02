@@ -2,26 +2,25 @@
 include_once('includes.php');
 
 $sek = 0;
-$workers = [new TractorWorker(), new FarmerWorker(), new CommonWorker()];
 $transport = null;
-$garage = [];
-$farm = new Farm(300, 0);
 $exc = new Exchange(1, 15);
-$farmProfit = new FarmProfit($farm, $exc);
+$farmProfit = new FarmProfit($exc);
+$farm = new Farm(300, 0, $farmProfit);
 
 while (true) {
     sleep(1);
-    if (!empty($garage)) {
-        $farm->checkDeliver($garage);
-        unset($garage[$farmProfit->cleanGarage($garage)]);
+    if (!empty($farmProfit->getAcceptedTransport())) {
+        $farm->checkDeliver();
+        $farmProfit->cleanGarage();
     }
-    $farm->payWorker($workers);
-    $params = $exc->generateAll();
-    $transport = $farmProfit->ifProfitable($params);
-    if ($transport !== null) {
-        array_push($garage, $transport);
-    }
-    print_r($garage);
+    $farm->payWorkers();
+    $price = $exc->generatePrice();
+    $transport = $exc->generateTransport();
+
+    $farm->sellCorn($price, $transport);
+
+//for checking mistakes etc...
+    print_r($farmProfit->getAcceptedTransport());
     $sek++;
     echo 'money:' . $farm->getMoneyBalance() . "\n";
     echo 'corn:' . $farm->getCornBalance() . "\n";

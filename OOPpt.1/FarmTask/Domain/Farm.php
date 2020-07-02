@@ -4,11 +4,15 @@ class Farm
 {
     private int $moneyBalance;
     private int $cornBalance;
+    private array $workers;
+    private FarmProfit $profitCalculation;
 
-    public function __construct(int $moneyBalance, int $cornBalance)
+    public function __construct(int $moneyBalance, int $cornBalance, FarmProfit $profitCalculation)
     {
         $this->moneyBalance = $moneyBalance;
         $this->cornBalance = $cornBalance;
+        $this->profitCalculation = $profitCalculation;
+        $this->workers = [new CommonWorker(), new FarmerWorker(), new TractorWorker()];
     }
 
     public function getMoneyBalance(): int
@@ -21,23 +25,28 @@ class Farm
         return $this->cornBalance;
     }
 
-    public function payWorker(array $workers): void
+    public function payWorkers(): void
     {
-        foreach ($workers as $worker) {
-            $params = $worker->work($this->moneyBalance, $this->cornBalance);
-            $this->moneyBalance = $params['payedSalary'];
-            $this->cornBalance = $params['earnedCorn'];
+        foreach ($this->workers as $worker) {
+            $afterSalary = $worker->getSalary($this->moneyBalance);
+            if ($afterSalary !== $this->moneyBalance) {
+                $this->moneyBalance = $afterSalary;
+                $this->cornBalance = $worker->earnCorn($this->cornBalance);
+            }
         }
     }
 
-    public function sellCorn(Deliver $transport): void
+    public function sellCorn(int $price, array $transport): void
     {
-        $this->cornBalance = $transport->doShipping($this->moneyBalance, $this->cornBalance);
+        $profTransport = $this->profitCalculation->ifProfitable($price, $transport, $this);
+        if ($profTransport !== null) {
+            $this->cornBalance = $profTransport->doShipping($this->moneyBalance, $this->cornBalance);
+        }
     }
 
-    public function checkDeliver(array $garage): void
+    public function checkDeliver(): void
     {
-        foreach ($garage as $index => $transport) {
+        foreach ($this->profitCalculation->getAcceptedTransport() as $index => $transport) {
             if ($transport->getDeliverTime() >= 1) {
                 $deliverMoney = $transport->isDelivering($this->moneyBalance);
                 if (!empty($deliverMoney)) {

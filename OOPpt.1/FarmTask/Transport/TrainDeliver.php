@@ -1,10 +1,22 @@
 <?php
 
-class TrainDeliverImpl implements Deliver
+class TrainDeliver implements Deliver
 {
     private const DELIVER_TIME = 15;
     private int $deliverTime = 0;
     private int $difference = 0;
+    private string $name = 'Train';
+    private int $price;
+
+    public function __construct(int $price)
+    {
+        $this->price = $price;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
     public function doShipping(int $farmMoney, int $farmCorn): int
     {
@@ -26,12 +38,12 @@ class TrainDeliverImpl implements Deliver
 
     public function paymentForDeliver(): int
     {
-        return ($this->difference * 15) - 200;
+        return ($this->difference * $this->price) - 200;
     }
 
     public function paymentForDeliverMax(): int
     {
-        return (1000 * 15) - 200;
+        return (1000 * $this->price) - 200;
     }
 
     public function isDelivering(int $farmMoney)

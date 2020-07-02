@@ -2,5 +2,7 @@
 
 abstract class Worker
 {
-    abstract function work(int $farmMoney, int $farmCorn): array;
+    abstract function getSalary(int $farmMoney): int;
+
+    abstract function earnCorn(int $farmCorn): int;
 }

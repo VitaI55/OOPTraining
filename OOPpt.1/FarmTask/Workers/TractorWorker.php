@@ -2,14 +2,17 @@
 
 class TractorWorker extends Worker
 {
-    public function work(int $farmMoney, int $farmCorn): array
+    public function getSalary(int $farmMoney): int
     {
         if ($farmMoney >= 200) {
-            $params['payedSalary'] = $farmMoney - 200;
-            $params['earnedCorn'] = $farmCorn + mt_rand(350, 500);
-            return $params;
+            return $farmMoney - 200;
         }
 
-        return ['payedSalary' => $farmMoney, 'earnedCorn' => $farmCorn];
+        return $farmMoney;
+    }
+
+    public function earnCorn(int $farmCorn): int
+    {
+        return $farmCorn + mt_rand(350, 500);
     }
 }

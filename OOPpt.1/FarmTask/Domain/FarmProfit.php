@@ -2,43 +2,50 @@
 
 class FarmProfit
 {
-    private Farm $farm;
     private Exchange $exchange;
+    private array $acceptedTransport;
 
-    public function __construct(Farm $farm, Exchange $exchange)
+    /**
+     * @return array
+     */
+    public function getAcceptedTransport(): array
     {
-        $this->farm = $farm;
-        $this->exchange = $exchange;
-        $this->garage = [];
+        return $this->acceptedTransport;
     }
 
-    public function ifProfitable(array $params)
+    public function __construct(Exchange $exchange)
     {
-        if ($params['price'] === $this->exchange->getMaxPrice()) {
-            if ($this->farm->getCornBalance() >= 100 && isset($params['transport']['plane'])) {
-                $this->farm->sellCorn($params['transport']['plane']);
+        $this->exchange = $exchange;
+        $this->acceptedTransport = [];
+    }
 
-                return $params['transport']['plane'];
+    public function ifProfitable(int $price, array $transport, Farm $farm)
+    {
+        if ($price === $this->exchange->getMaxPrice()) {
 
-            } else if ($this->farm->getCornBalance() >= 20 && isset($params['transport']['train'])) {
-                $this->farm->sellCorn($params['transport']['train']);
+            foreach ($transport as $tran) {
+                if ($tran->getName() === 'Plane' && $farm->getCornBalance() >= 80) {
+                    array_push($this->acceptedTransport, $tran);
 
-                return $params['transport']['train'];
+                    return $tran;
+                } else if ($tran->getName() === 'Truck' && $farm->getCornBalance() >= 5) {
+                    array_push($this->acceptedTransport, $tran);
 
-            } else if ($this->farm->getCornBalance() >= 4 && isset($params['transport']['truck'])) {
-                $this->farm->sellCorn($params['transport']['truck']);
+                    return $tran;
+                } else if ($tran->getName() === 'Train' && $farm->getCornBalance() >= 15) {
+                    array_push($this->acceptedTransport, $tran);
 
-                return $params['transport']['truck'];
+                    return $tran;
+                }
             }
         }
     }
 
-    public function cleanGarage(array $garage)
+    public function cleanGarage(): void
     {
-        foreach ($garage as $index => $transport) {
+        foreach ($this->acceptedTransport as $index => $transport) {
             if ($transport->getDeliverTime() === 0) {
-
-                return $index;
+                unset($this->acceptedTransport[$index]);
             }
         }
     }

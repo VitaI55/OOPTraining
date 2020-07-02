@@ -11,4 +11,6 @@ interface Deliver
     function isDelivering(int $farmMoney);
 
     function getDeliverTime(): int;
+
+    function getName(): string;
 }

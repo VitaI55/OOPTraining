@@ -1,10 +1,22 @@
 <?php
 
-class PlaneDeliverImpl implements Deliver
+class PlaneDeliver implements Deliver
 {
     private const DELIVER_TIME = 5;
     private int $deliverTime = 0;
     private int $difference = 0;
+    private string $name = 'Plane';
+    private int $price;
+
+    public function __construct(int $price)
+    {
+        $this->price = $price;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
     public function doShipping(int $farmMoney, int $farmCorn): int
     {
@@ -26,12 +38,12 @@ class PlaneDeliverImpl implements Deliver
 
     public function paymentForDeliver(): int
     {
-        return ($this->difference * 15) - 1000;
+        return ($this->difference * $this->price) - 1000;
     }
 
     public function paymentForDeliverMax(): int
     {
-        return (5000 * 15) - 1000;
+        return (5000 * $this->price) - 1000;
     }
 
     public function isDelivering(int $farmMoney)
@@ -49,3 +61,4 @@ class PlaneDeliverImpl implements Deliver
         }
     }
 }
+

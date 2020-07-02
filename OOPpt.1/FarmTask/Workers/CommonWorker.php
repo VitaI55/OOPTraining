@@ -2,14 +2,17 @@
 
 class CommonWorker extends Worker
 {
-    public function work(int $farmMoney, int $farmCorn): array
+    public function getSalary(int $farmMoney): int
     {
         if ($farmMoney >= 1) {
-            $params['payedSalary'] = $farmMoney - 1;
-            $params['earnedCorn'] = $farmCorn + mt_rand(5, 10);
-            return $params;
+            return $farmMoney - 1;
         }
 
-        return ['payedSalary' => $farmMoney, 'earnedCorn' => $farmCorn];
+        return $farmMoney;
+    }
+
+    public function earnCorn(int $farmCorn): int
+    {
+        return $farmCorn + mt_rand(5, 10);
     }
 }
