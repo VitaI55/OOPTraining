@@ -36,7 +36,6 @@ class TrainDeliver implements Deliver
         if ($difference <= 1000) {
 
             return ($difference * $this->price) - 200;
-
         } else {
 
             return 0;
@@ -53,7 +52,6 @@ class TrainDeliver implements Deliver
         $this->deliverTime++;
 
         if ($this->deliverTime === self::DELIVER_TIME) {
-
             if ($this->difference === 0) {
                 $moneyFromDeliver = $this->paymentForDeliverMax();
             } else {

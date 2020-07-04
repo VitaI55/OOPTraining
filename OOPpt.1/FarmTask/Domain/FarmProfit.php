@@ -25,7 +25,6 @@ class FarmProfit
             $profTransport = [];
 
             if ($farm->getCornBalance() <= 1000) {
-
                 foreach ($transport as $index => $tr) {
                     $profTransport[$index] = $tr->paymentForDeliver($farm->getCornBalance());
                 }
@@ -34,9 +33,7 @@ class FarmProfit
                 $this->acceptedTransport[] = $transport[$topTransport];
 
                 return $transport[$topTransport];
-
             } else {
-
                 foreach ($transport as $index => $tr) {
                     $profTransport[$index] = $tr->paymentForDeliverMax();
                 }
@@ -52,7 +49,6 @@ class FarmProfit
     public function cleanGarage(): void
     {
         foreach ($this->acceptedTransport as $index => $transport) {
-
             if ($transport->getDeliverTime() === 0) {
                 unset($this->acceptedTransport[$index]);
             }

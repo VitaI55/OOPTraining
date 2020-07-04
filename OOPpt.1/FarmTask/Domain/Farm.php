@@ -53,7 +53,6 @@ class Farm
     public function checkDeliver(): void
     {
         foreach ($this->profitCalculation->getAcceptedTransport() as $index => $transport) {
-
             if ($transport->getDeliverTime() < 1) {
                 continue;
             }

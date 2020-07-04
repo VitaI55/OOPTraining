@@ -36,7 +36,6 @@ class PlaneDeliver implements Deliver
         if ($difference <= 5000) {
 
             return ($difference * $this->price) - 1000;
-
         } else {
 
             return 0;
@@ -53,7 +52,6 @@ class PlaneDeliver implements Deliver
         $this->deliverTime++;
 
         if ($this->deliverTime === self::DELIVER_TIME) {
-
             if ($this->difference === 0) {
                 $moneyFromDeliver = $this->paymentForDeliverMax();
             } else {

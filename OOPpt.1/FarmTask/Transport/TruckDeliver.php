@@ -36,7 +36,6 @@ class TruckDeliver implements Deliver
         if ($difference <= 300) {
 
             return ($difference * $this->price) - 50;
-
         } else {
 
             return 0;
@@ -53,7 +52,6 @@ class TruckDeliver implements Deliver
         $this->deliverTime++;
 
         if ($this->deliverTime === self::DELIVER_TIME) {
-
             if ($this->difference === 0) {
                 $moneyFromDeliver = $this->paymentForDeliverMax();
             } else {
