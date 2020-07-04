@@ -2,17 +2,13 @@
 
 class TractorWorker extends Worker
 {
-    public function getSalary(int $farmMoney): int
+    public function getSalary(): int
     {
-        if ($farmMoney >= 200) {
-            return $farmMoney - 200;
-        }
-
-        return $farmMoney;
+        return $this->salary;
     }
 
-    public function earnCorn(int $farmCorn): int
+    public function earnCorn(): int
     {
-        return $farmCorn + mt_rand(350, 500);
+        return mt_rand(350, 500);
     }
 }

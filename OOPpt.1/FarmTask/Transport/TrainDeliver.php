@@ -5,17 +5,11 @@ class TrainDeliver implements Deliver
     private const DELIVER_TIME = 15;
     private int $deliverTime = 0;
     private int $difference = 0;
-    private string $name = 'Train';
     private int $price;
 
     public function __construct(int $price)
     {
         $this->price = $price;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
     }
 
     public function doShipping(int $farmMoney, int $farmCorn): int
@@ -26,6 +20,7 @@ class TrainDeliver implements Deliver
         } else {
             $corn = $farmCorn - 1000;
         }
+
         $this->isDelivering($farmMoney);
 
         return $corn;
@@ -36,9 +31,16 @@ class TrainDeliver implements Deliver
         return $this->deliverTime;
     }
 
-    public function paymentForDeliver(): int
+    public function paymentForDeliver(int $difference): int
     {
-        return ($this->difference * $this->price) - 200;
+        if ($difference <= 1000) {
+
+            return ($difference * $this->price) - 200;
+
+        } else {
+
+            return 0;
+        }
     }
 
     public function paymentForDeliverMax(): int
@@ -49,12 +51,15 @@ class TrainDeliver implements Deliver
     public function isDelivering(int $farmMoney)
     {
         $this->deliverTime++;
+
         if ($this->deliverTime === self::DELIVER_TIME) {
+
             if ($this->difference === 0) {
                 $moneyFromDeliver = $this->paymentForDeliverMax();
             } else {
-                $moneyFromDeliver = $this->paymentForDeliver();
+                $moneyFromDeliver = $this->paymentForDeliver($this->difference);
             }
+
             $this->deliverTime = 0;
 
             return $farmMoney + $moneyFromDeliver;

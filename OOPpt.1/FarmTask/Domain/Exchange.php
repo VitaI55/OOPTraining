@@ -35,14 +35,8 @@ class Exchange
             new TrainDeliver($this->maxPrice)
         ];
         shuffle($transport);
-        $rand = mt_rand(0, 2);
-        $chosenTransport = [];
+        $rand = mt_rand(1, count($transport));
 
-        while ($rand >= 0) {
-            array_push($chosenTransport, $transport[$rand]);
-            $rand -= 1;
-        }
-
-        return $chosenTransport;
+        return array_slice($transport, 0, $rand);
     }
 }

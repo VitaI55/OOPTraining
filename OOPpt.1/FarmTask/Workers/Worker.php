@@ -2,7 +2,18 @@
 
 abstract class Worker
 {
-    abstract function getSalary(int $farmMoney): int;
+    protected int $salary;
 
-    abstract function earnCorn(int $farmCorn): int;
+    /**
+     * Worker constructor.
+     * @param int $salary
+     */
+    public function __construct(int $salary)
+    {
+        $this->salary = $salary;
+    }
+
+    abstract function getSalary(): int;
+
+    abstract function earnCorn(): int;
 }

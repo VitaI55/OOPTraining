@@ -22,21 +22,29 @@ class FarmProfit
     public function ifProfitable(int $price, array $transport, Farm $farm)
     {
         if ($price === $this->exchange->getMaxPrice()) {
+            $profTransport = [];
 
-            foreach ($transport as $tran) {
-                if ($tran->getName() === 'Plane' && $farm->getCornBalance() >= 80) {
-                    array_push($this->acceptedTransport, $tran);
+            if ($farm->getCornBalance() <= 1000) {
 
-                    return $tran;
-                } else if ($tran->getName() === 'Truck' && $farm->getCornBalance() >= 5) {
-                    array_push($this->acceptedTransport, $tran);
-
-                    return $tran;
-                } else if ($tran->getName() === 'Train' && $farm->getCornBalance() >= 15) {
-                    array_push($this->acceptedTransport, $tran);
-
-                    return $tran;
+                foreach ($transport as $index => $tr) {
+                    $profTransport[$index] = $tr->paymentForDeliver($farm->getCornBalance());
                 }
+
+                $topTransport = array_search(max($profTransport), $profTransport);
+                $this->acceptedTransport[] = $transport[$topTransport];
+
+                return $transport[$topTransport];
+
+            } else {
+
+                foreach ($transport as $index => $tr) {
+                    $profTransport[$index] = $tr->paymentForDeliverMax();
+                }
+
+                $topTransport = array_search(max($profTransport), $profTransport);
+                $this->acceptedTransport[] = $transport[$topTransport];
+
+                return $transport[$topTransport];
             }
         }
     }
@@ -44,6 +52,7 @@ class FarmProfit
     public function cleanGarage(): void
     {
         foreach ($this->acceptedTransport as $index => $transport) {
+
             if ($transport->getDeliverTime() === 0) {
                 unset($this->acceptedTransport[$index]);
             }

@@ -2,17 +2,13 @@
 
 class CommonWorker extends Worker
 {
-    public function getSalary(int $farmMoney): int
+    public function getSalary(): int
     {
-        if ($farmMoney >= 1) {
-            return $farmMoney - 1;
-        }
-
-        return $farmMoney;
+        return $this->salary;
     }
 
-    public function earnCorn(int $farmCorn): int
+    public function earnCorn(): int
     {
-        return $farmCorn + mt_rand(5, 10);
+        return mt_rand(5, 10);
     }
 }
