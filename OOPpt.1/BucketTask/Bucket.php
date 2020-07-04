@@ -36,7 +36,7 @@ class Cart
         }
     }
 
-    public function removeProductById($id): void
+    public function removeProductById(int $id): void
     {
         unset($this->products[$id]);
     }
@@ -73,7 +73,7 @@ class Cart
             'date' => date('m.d.Y h:i:s '),
             'total' => $this->getTotalPrice(),
             'tax' => $this->tax(),
-            'check' => $this->products,
+            'products' => $this->products,
             'toPay' => $this->toPay()
         ]);
     }
